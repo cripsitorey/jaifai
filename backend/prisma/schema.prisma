@@ -1,0 +1,166 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+// ENUMS
+// -----------------------------------------------------------------------------
+
+enum UserRole {
+  ADMIN
+  RESIDENT
+}
+
+enum AuditAction {
+  USER_CREATED
+  PROPERTY_CLAIMED
+  VOTE_CAST
+  POLL_CREATED
+  POLL_CLOSED
+  SYSTEM_EVENT
+}
+
+// -----------------------------------------------------------------------------
+// CORE MULTI-TENANCY
+// -----------------------------------------------------------------------------
+
+model Tenant {
+  id        String   @id @default(uuid())
+  slug      String   @unique
+  name      String
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relationships
+  properties Property[]
+  users      User[]
+  polls      Poll[]
+  auditLogs  AuditLog[]
+
+  @@map("tenants")
+}
+
+// -----------------------------------------------------------------------------
+// PROPERTY MANAGEMENT (RESIDENTIAL UNITS)
+// -----------------------------------------------------------------------------
+
+model Property {
+  id         String   @id @default(uuid())
+  tenantId   String
+  identifier String // e.g., "Villa 4", "Apt 101"
+  coefficient Float   @default(1.0) // Voting weight/common area fees
+
+  // Onboarding / Claim Logic
+  claimToken String?  @unique // UUID used for generating the QR code
+  isClaimed  Boolean  @default(false)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relationships
+  tenant      Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  residents   User[]
+  voteReceipts VoteReceipt[]
+
+  @@unique([tenantId, identifier]) // Identifiers must be unique within a tenant
+  @@map("properties")
+}
+
+// -----------------------------------------------------------------------------
+// USER MANAGEMENT
+// -----------------------------------------------------------------------------
+
+model User {
+  id           String   @id @default(uuid())
+  tenantId     String
+  propertyId   String?  // Nullable because admins might not live in a property, or staff
+  username     String
+  passwordHash String
+  role         UserRole @default(RESIDENT)
+  isActive     Boolean  @default(true)
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relationships
+  tenant   Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  property Property? @relation(fields: [propertyId], references: [id])
+
+  @@unique([tenantId, username]) // Usernames unique per tenant
+  @@map("users")
+}
+
+// -----------------------------------------------------------------------------
+// VOTING SYSTEM
+// -----------------------------------------------------------------------------
+
+model Poll {
+  id          String   @id @default(uuid())
+  tenantId    String
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  isActive    Boolean  @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relationships
+  tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  options      PollOption[]
+  voteReceipts VoteReceipt[]
+
+  @@map("polls")
+}
+
+model PollOption {
+  id        String @id @default(uuid())
+  pollId    String
+  text      String
+  voteCount Int    @default(0)
+
+  // Relationships
+  poll Poll @relation(fields: [pollId], references: [id], onDelete: Cascade)
+
+  @@map("poll_options")
+}
+
+model VoteReceipt {
+  id            String   @id @default(uuid())
+  pollId        String
+  propertyId    String
+  encryptedHash String   // Cryptographic proof of vote (anonymized)
+  timestamp     DateTime @default(now())
+
+  // Relationships
+  poll     Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id])
+
+  // Constraints: One vote per property per poll
+  @@unique([pollId, propertyId])
+  @@map("vote_receipts")
+}
+
+// -----------------------------------------------------------------------------
+// AUDIT LOGGING
+// -----------------------------------------------------------------------------
+
+model AuditLog {
+  id               String      @id @default(uuid())
+  tenantId         String
+  action           AuditAction
+  automatedMessage String
+  timestamp        DateTime    @default(now())
+  
+  // Relationships
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@map("audit_logs")
+}

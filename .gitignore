@@ -1,24 +1,46 @@
-# Nestjs specific
-/dist
-/node_modules
-/build
-/tmp
+# --- Dependencias ---
+node_modules/
+npm-debug.log
+yarn-error.log
+pnpm-debug.log
 
-# Logs
-logs
-*.log
-npm-debug.log*
-pnpm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-
-# dotenv environment variable files
+# --- Entorno y Secretos (CRÍTICO) ---
 .env
-.env.development
-.env.test
-.env.production
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
 
-# temp directory
-.temp
-.tmp
+# --- Backend (NestJS) ---
+/backend/dist/
+/backend/coverage/
+/backend/*.log
+
+# Parche AdminJS (El archivo generado automáticamente)
+/backend/src/admin/dmmf.json
+/backend/dist/admin/dmmf.json
+
+# --- Frontend (Vite/React) ---
+/frontend/dist/
+/frontend/coverage/
+/frontend/.eslintcache
+
+# --- Base de Datos y Docker ---
+# Si mapeaste la data de Postgres a una carpeta local en tu docker-compose
+postgres_data/
+pgdata/
+.docker/
+
+# --- IDE y Sistema ---
+.DS_Store
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+
+# --- Prisma ---
+# OJO: Las migraciones SI se suben, pero el cliente generado NO (está en node_modules)
+# Solo ignora db local si usas sqlite (no es tu caso, usas postgres, pero por si acaso)
+*.sqlite
+*.sqlite-journal
