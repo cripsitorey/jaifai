@@ -12,9 +12,9 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, pass: string, tenantId: string): Promise<any> {
+  async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.prisma.user.findFirst({
-      where: { username, tenantId },
+      where: { username },
     });
     
     if (user && await bcrypt.compare(pass, user.passwordHash)) { 

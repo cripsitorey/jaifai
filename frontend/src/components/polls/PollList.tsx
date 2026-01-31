@@ -15,7 +15,7 @@ const PollList: React.FC = () => {
             setPolls(response.data);
             setError(null);
         } catch (err) {
-            setError('Failed to load polls.');
+            setError('Error al cargar votaciones.');
             console.error(err);
         } finally {
             setLoading(false);
@@ -27,7 +27,7 @@ const PollList: React.FC = () => {
     }, []);
 
     const handleVoteSuccess = () => {
-        // Refresh polls to update state to 'voted' and see new results
+        // Fix Stale Results: Refetch from server to get updated counts and status
         fetchPolls();
     };
 
@@ -44,7 +44,7 @@ const PollList: React.FC = () => {
         return (
             <Card className="text-center py-8 text-red-500 border-red-100 bg-red-50">
                 <p>{error}</p>
-                <button onClick={fetchPolls} className="text-sm underline mt-2">Try again</button>
+                <button onClick={fetchPolls} className="text-sm underline mt-2">Reintentar</button>
             </Card>
         );
     }
@@ -52,7 +52,7 @@ const PollList: React.FC = () => {
     if (polls.length === 0) {
         return (
             <Card className="text-center py-10 bg-gray-50 border-dashed">
-                <p className="text-gray-500">No active polls at the moment.</p>
+                <p className="text-gray-500">No hay votaciones activas.</p>
             </Card>
         );
     }

@@ -37,29 +37,29 @@ const LoginPage: React.FC = () => {
             <div className="flex flex-col justify-center min-h-[80vh] px-4">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-blue-600">Jaifai</h1>
-                    <p className="text-gray-500 mt-2">Sign in to your account</p>
+                    <p className="text-gray-500 mt-2">Ingresa a tu cuenta</p>
                 </div>
 
                 <Card className="p-6 shadow-lg">
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Usuario</label>
                             <Input
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                placeholder="Enter your username"
+                                placeholder="Ingresa tu usuario"
                                 required
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
                             <Input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Enter your password"
+                                placeholder="Ingresa tu contraseña"
                                 required
                             />
                         </div>
@@ -71,8 +71,12 @@ const LoginPage: React.FC = () => {
                         )}
 
                         <Button type="submit" fullWidth disabled={loading}>
-                            {loading ? 'Signing in...' : 'Sign In'}
+                            {loading ? 'Ingresando...' : 'Ingresar'}
                         </Button>
+
+                        <div className="text-center mt-4">
+                            <p className="text-sm text-gray-600">¿No tienes cuenta? Escanea el QR de tu casa.</p>
+                        </div>
                     </form>
                 </Card>
             </div>

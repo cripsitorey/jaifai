@@ -15,7 +15,7 @@ export class PollsController {
   @Get()
   @UseGuards(JwtAuthGuard)
   findAll(@Request() req: any) {
-    return this.pollsService.findAll(req.user?.tenantId, req.user?.propertyId); 
+    return this.pollsService.findAll(req.user?.tenantId, req.user?.sub); 
   }
 
   @Post(':id/vote')

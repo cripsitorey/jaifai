@@ -26,14 +26,15 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Clear storage and redirect to login if needed, or let the UI handle it via context
-      // For now, we'll just ensure the error is propagated
-      // Ideally, the AuthContext should handle the logout state update.
-      // We can also dispatch a custom event if we want to trigger global logout from here
-      // window.dispatchEvent(new Event('auth:unauthorized'));
+      // Clear storage and redirect to login if needed
     }
     return Promise.reject(error);
   }
 );
+
+export const getAnnouncements = async () => {
+    const response = await api.get('/announcements');
+    return response.data;
+};
 
 export default api;

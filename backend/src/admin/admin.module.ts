@@ -69,24 +69,34 @@ AdminJS.registerAdapter({ Database, Resource });
                         language: 'es',
                         translations: {
                             labels: {
-                                loginWelcome: 'Bienvenido al Panel de Administración',
-                                resources: 'Recursos',
-                                dashboard: 'Tablero Principal',
-                                Tenant: 'Condominios (Tenants)',
-                                Property: 'Propiedades / Unidades',
-                                User: 'Usuarios / Residentes',
+                                loginWelcome: 'Bienvenido al Portal Administrativo',
+                                Tenant: 'Urbanizaciones',
+                                Property: 'Lotes/Casas',
+                                User: 'Residentes',
                                 Poll: 'Votaciones',
                                 PollOption: 'Opciones de Voto',
-                                VoteReceipt: 'Recibos de Voto (Auditoría)',
-                                AuditLog: 'Registros del Sistema',
+                                VoteReceipt: 'Recibos de Voto',
+                                Announcement: 'Anuncios',
+                                dashboard: 'Panel Principal',
+                            },
+                            actions: {
+                                new: 'Crear Nuevo',
+                                edit: 'Editar',
+                                show: 'Ver Detalles',
+                                delete: 'Eliminar',
+                                list: 'Listado',
                             },
                             buttons: {
-                                login: 'Iniciar Sesión',
                                 save: 'Guardar',
                                 filter: 'Filtrar',
+                                login: 'Entrar',
+                                confirm: 'Confirmar',
                             },
-                            messages: {
-                                loginWelcome: 'Por favor inicie sesión para continuar',
+                            properties: {
+                                isClaimed: '¿Registrado?',
+                                isActive: '¿Activa?',
+                                claimToken: 'Token QR',
+                                coefficient: 'Coeficiente',
                             }
                         }
                     },

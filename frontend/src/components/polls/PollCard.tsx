@@ -24,7 +24,7 @@ export interface Poll {
 
 interface PollCardProps {
     poll: Poll;
-    onVoteSuccess: () => void;
+    onVoteSuccess: (pollId: string) => void;
 }
 
 export const PollCard: React.FC<PollCardProps> = ({ poll, onVoteSuccess }) => {
@@ -38,7 +38,8 @@ export const PollCard: React.FC<PollCardProps> = ({ poll, onVoteSuccess }) => {
         setError(null);
         try {
             await api.post(`/polls/${poll.id}/vote`, { optionId: selectedOption });
-            onVoteSuccess();
+            // Instant feedback
+            onVoteSuccess(poll.id);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to cast vote.');
         } finally {
@@ -61,8 +62,8 @@ export const PollCard: React.FC<PollCardProps> = ({ poll, onVoteSuccess }) => {
 
                 <div className="flex items-center text-xs text-gray-500 space-x-2">
                     <Clock className="w-3 h-3" />
-                    <span>Ends {new Date(poll.endDate).toLocaleDateString()}</span>
-                    {isExpired && <span className="text-red-500 font-medium">(Closed)</span>}
+                    <span>Finaliza el {new Date(poll.endDate).toLocaleDateString('es-EC', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+                    {isExpired && <span className="text-red-500 font-medium">(Cerrada)</span>}
                 </div>
             </div>
 
@@ -70,6 +71,10 @@ export const PollCard: React.FC<PollCardProps> = ({ poll, onVoteSuccess }) => {
                 {poll.hasVoted ? (
                     // Results View
                     <div className="space-y-3">
+                        <div className="bg-green-50 text-green-700 p-2 rounded text-sm font-medium flex items-center mb-2">
+                            <CheckCircle2 className="w-4 h-4 mr-2" />
+                            Tu voto fue registrado
+                        </div>
                         {poll.options.map((option) => {
                             const percentage = totalVotes > 0 ? Math.round((option.voteCount / totalVotes) * 100) : 0;
                             return (
@@ -88,7 +93,7 @@ export const PollCard: React.FC<PollCardProps> = ({ poll, onVoteSuccess }) => {
                             );
                         })}
                         <div className="pt-2 text-center text-xs text-gray-400">
-                            Total votes: {totalVotes}
+                            Total de votos: {totalVotes}
                         </div>
                     </div>
                 ) : (
@@ -132,7 +137,7 @@ export const PollCard: React.FC<PollCardProps> = ({ poll, onVoteSuccess }) => {
                             fullWidth
                             className="mt-4"
                         >
-                            {loading ? 'Submitting...' : isExpired ? 'Voting Closed' : 'Vote'}
+                            {loading ? 'Enviando...' : isExpired ? 'Votación Cerrada' : 'Votar'}
                         </Button>
                     </>
                 )}

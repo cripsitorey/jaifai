@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Request, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -8,9 +8,9 @@ export class AuthController {
   @Post('login')
   async login(@Body() req: any) {
     // Ideally use a LocalAuthGuard, but for scaffolding simple body check:
-    const user = await this.authService.validateUser(req.username, req.password, req.tenantId);
+    const user = await this.authService.validateUser(req.username, req.password);
     if (!user) {
-        throw new Error('Unauthorized'); // Use proper exception
+        throw new UnauthorizedException('Invalid credentials');
     }
     return this.authService.login(user);
   }

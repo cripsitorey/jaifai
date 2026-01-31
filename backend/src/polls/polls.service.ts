@@ -11,20 +11,30 @@ export class PollsService {
     return this.prisma.poll.create({ data });
   }
 
-  async findAll(tenantId: string, propertyId?: string) {
+  async findAll(tenantId: string, userId: string) {
     const polls = await this.prisma.poll.findMany({ 
         where: { tenantId }, 
         include: { options: true },
         orderBy: { createdAt: 'desc' }
     });
 
-    if (!propertyId) {
+    // Authoritative lookup
+    if (!userId) {
+         return polls.map(poll => ({ ...poll, hasVoted: false }));
+    }
+
+    const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { propertyId: true }
+    });
+
+    if (!user || !user.propertyId) {
         return polls.map(poll => ({ ...poll, hasVoted: false }));
     }
 
     const receipts = await this.prisma.voteReceipt.findMany({
         where: {
-            propertyId,
+            propertyId: user.propertyId,
             pollId: { in: polls.map(p => p.id) }
         }
     });

@@ -51,9 +51,9 @@ const SetupPage: React.FC = () => {
             <Layout hideNav>
                 <div className="flex flex-col justify-center min-h-[80vh] px-4 text-center">
                     <h1 className="text-2xl font-bold text-red-500">Error</h1>
-                    <p className="text-gray-600 mt-2">Invalid or missing setup token.</p>
+                    <p className="text-gray-600 mt-2">Token inválido o faltante.</p>
                     <Button variant="ghost" onClick={() => navigate('/login')} className="mt-4">
-                        Go to Login
+                        Ir al Login
                     </Button>
                 </div>
             </Layout>
@@ -64,30 +64,30 @@ const SetupPage: React.FC = () => {
         <Layout hideNav>
             <div className="flex flex-col justify-center min-h-[80vh] px-4">
                 <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold text-blue-600">Welcome to Jaifai</h1>
-                    <p className="text-gray-500 mt-2">Set up your account to get started</p>
+                    <h1 className="text-3xl font-bold text-blue-600">Bienvenido a Jaifai</h1>
+                    <p className="text-gray-500 mt-2">Configura tu cuenta para comenzar</p>
                 </div>
 
                 <Card className="p-6 shadow-lg">
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Choose Username</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Usuario</label>
                             <Input
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                placeholder="Desired username"
+                                placeholder="Nombre de usuario deseado"
                                 required
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Set Password</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
                             <Input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder="Strong password"
+                                placeholder="Contraseña segura"
                                 required
                             />
                         </div>
@@ -99,7 +99,7 @@ const SetupPage: React.FC = () => {
                         )}
 
                         <Button type="submit" fullWidth disabled={loading}>
-                            {loading ? 'Setting up...' : 'Complete Setup'}
+                            {loading ? 'Activando...' : 'Activar Cuenta'}
                         </Button>
                     </form>
                 </Card>
